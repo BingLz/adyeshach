@@ -3,7 +3,7 @@ name: Gradle Package
 on:
   push:
     branches:
-      - 2.0
+      - 2.1
   #workflow_dispatch:
   release:
     types: [created]
