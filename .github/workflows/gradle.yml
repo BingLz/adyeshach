@@ -36,10 +36,17 @@ jobs:
       uses: gradle/actions/setup-gradle@af1da67850ed9a4cedd57bfd976089dd991e2582 # v4.0.0
 
     - name: Build with Gradle
-      run: ./gradlew clean build
+      run: |
+        chmod +x ./gradlew
+        ./gradlew clean build
+        mkdir -p artifact
+        find . -name "*.jar" -not -path "*/\.gradle/*" -not -path "*/build/tmp/*" -exec cp {} artifact/ \;
+
+    - name: List generated artifacts
+      run: ls -la artifact/
 
     - name: Upload build artifacts
       uses: actions/upload-artifact@v4
       with:
         name: adyeshach
-        path: ${{ github.workspace }}/plugin/build/output/libs/*.jar
+        path: artifact/*.jar
