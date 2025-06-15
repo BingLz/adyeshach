@@ -15,9 +15,12 @@ on:
 
 jobs:
   build:
+
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
+      packages: write
+      id-token: write
 
     steps:
     - uses: actions/checkout@v4
@@ -26,17 +29,17 @@ jobs:
       with:
         java-version: '17'
         distribution: 'temurin'
+        server-id: github # Value of the distributionManagement/repository/id field of the pom.xml
+        settings-path: ${{ github.workspace }} # location for the settings.xml file
 
-    # Configure Gradle for optimal use in GitHub Actions, including caching of downloaded dependencies.
-    # See: https://github.com/gradle/actions/blob/main/setup-gradle/README.md   
     - name: Setup Gradle
       uses: gradle/actions/setup-gradle@af1da67850ed9a4cedd57bfd976089dd991e2582 # v4.0.0
 
-    - name: Build with Gradle Wrapper
-      run: ./gradlew build
+    - name: Build with Gradle
+      run: ./gradlew clean build
 
     - name: Upload build artifacts
       uses: actions/upload-artifact@v4
       with:
-        name: Package
-        path: build/libs
+        name: adyeshach
+        path: ${{ github.workspace }}/plugin/build/output/libs/*.jar
